@@ -1,0 +1,87 @@
+name: Release note notification to Slack
+
+on:
+  workflow_dispatch:
+  schedule:
+    # 매일 09:05 KST = 00:05 UTC
+    - cron: "5 0 * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Restore state cache
+        id: restore-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: state
+          key: release-bot-state-${{ github.run_id }}
+          restore-keys: |
+            release-bot-state-
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run notifier
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          # 기본 제공 토큰(레이트리밋/인증에 사용). 퍼블릭 레포면 없어도 되지만 안정적으로 쓰기 위해 포함.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # 옵션(원하면 수정)
+          INCLUDE_PRERELEASES: "false"
+        run: |
+          python scripts/release-notfier.py
+
+      - name: Configure git user for state commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Commit and push state to dedicated branch
+        env:
+          STATE_BRANCH: release-notifier-state
+        run: |
+          if [ ! -f state/last_seen.json ]; then
+            echo "State file not found; skipping commit."
+            exit 0
+          fi
+
+          # Save state file before switching branches
+          tmp_state=$(mktemp)
+          cp state/last_seen.json "$tmp_state"
+
+          # Fetch state branch if it exists, then check it out (or create new)
+          git fetch origin "$STATE_BRANCH" || true
+          if git rev-parse --verify "origin/$STATE_BRANCH" >/dev/null 2>&1; then
+            git checkout -B "$STATE_BRANCH" "origin/$STATE_BRANCH"
+          else
+            git checkout -B "$STATE_BRANCH"
+          fi
+
+          # Restore updated state file into this branch
+          cp "$tmp_state" state/last_seen.json
+
+          if git diff --quiet -- state/last_seen.json; then
+            echo "No state changes to commit."
+            exit 0
+          fi
+
+          git add state/last_seen.json
+          git commit -m "chore: update release notifier state [skip ci]"
+          git push origin "$STATE_BRANCH"
+
+      # Cache save: key는 상태 파일 hash로 변경되도록 하여 다음 run에서 복원 가능하게 함
+      - name: Save state cache
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: state
+          key: release-bot-state-${{ hashFiles('state/last_seen.json') }}
