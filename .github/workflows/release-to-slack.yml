@@ -35,6 +35,9 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           # 기본 제공 토큰(레이트리밋/인증에 사용). 퍼블릭 레포면 없어도 되지만 안정적으로 쓰기 위해 포함.
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # 옵션: Gemini 요약용 API Key. 없으면 룰 기반 메시지만 전송.
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_MODEL: "gemini-1.5-flash"
           # 옵션(원하면 수정)
           INCLUDE_PRERELEASES: "false"
         run: |

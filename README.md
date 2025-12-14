@@ -22,7 +22,17 @@ GitHub Actions로 Spring Boot / Spring Framework 릴리즈를 감지해 Slack으
 
 ## 환경 변수
 - 필수: `SLACK_WEBHOOK_URL`
-- 옵션: `GITHUB_TOKEN`(레이트리밋/프라이빗 접근), `INCLUDE_PRERELEASES`(true/false), `SLACK_SEND_MODE`(combined/per_repo)
+- 옵션:
+  - `GITHUB_TOKEN` (레이트리밋/프라이빗 접근)
+  - `INCLUDE_PRERELEASES` (true/false)
+  - `SLACK_SEND_MODE` (combined/per_repo)
+  - `GEMINI_API_KEY` (있으면 릴리스 노트를 Gemini로 요약해서 추가 전송)
+  - `GEMINI_MODEL` (선택, 기본 `gemini-1.5-flash`)
+
+### Gemini 요약 활성화하기
+1) Google AI Studio에서 API Key를 발급받아 GitHub Repo Secrets에 `GEMINI_API_KEY`로 저장합니다.
+2) 워크플로우 실행 시 `scripts/release-notfier.py`가 릴리즈 본문을 Gemini에 보내 짧은 bullet 요약을 생성하고, Slack 메시지에 `AI 요약 (Gemini)` 섹션으로 포함합니다.
+3) 키가 없으면 기존 룰 기반 섹션만 전송됩니다.
 
 ## 상태 저장
 - 최근에 전송한 릴리스 태그는 `state/last_seen.json`에 기록됩니다.

@@ -15,6 +15,8 @@ Optional env:
   GITHUB_TOKEN
   INCLUDE_PRERELEASES (true/false)
   SLACK_SEND_MODE (combined/per_repo)
+  GEMINI_API_KEY (optional AI summarization)
+  GEMINI_MODEL (optional, default: gemini-1.5-flash)
 """
 
 from __future__ import annotations
@@ -76,6 +78,8 @@ SECTION_PATTERNS = {
 }
 
 MAX_BULLETS_PER_SECTION = 8
+DEFAULT_GEMINI_MODEL = "gemini-1.5-flash"
+MAX_RELEASE_BODY_FOR_AI = 6000
 
 
 @dataclass(frozen=True)
@@ -195,6 +199,64 @@ def fetch_latest_release(repo: str, token: Optional[str], include_prereleases: b
     )
 
 
+def summarize_with_gemini(product: str, rel: Release, api_key: str, model: str) -> Optional[str]:
+    """Use Gemini to produce a short Slack-ready summary."""
+    body = (rel.body or "").strip()
+    if not body:
+        return None
+
+    if len(body) > MAX_RELEASE_BODY_FOR_AI:
+        body = body[:MAX_RELEASE_BODY_FOR_AI]
+
+    prompt = (
+        "역할: Slack에 보낼 릴리즈 노트 요약 작성자. 한국어로만 간결하게 작성합니다. 과장/추측/인사말 금지.\n"
+        "출력 형식(그대로 사용):\n"
+        "Breaking:\n"
+        "• ...\n"
+        "Deprecated:\n"
+        "• ...\n"
+        "Features:\n"
+        "• ...\n"
+        "BugFixes:\n"
+        "• ...\n"
+        "Dependency:\n"
+        "• ...\n"
+        "Docs:\n"
+        "• ...\n"
+        "Notes:\n"
+        "• ... (기타 중요 메모가 있을 때만)\n"
+        "- 각 섹션에서 항목이 없으면 해당 섹션 줄 자체를 생략합니다.\n"
+        "- 모든 bullet은 '• '로 시작하고 120자 이내로 요약합니다.\n"
+        "- Breaking/Deprecated/Dependency를 우선적으로 포함하고, 총 bullet은 최대 8개로 제한합니다.\n"
+        "- 내용이 정말 없으면 '• 주요 변경점 없음' 한 줄만 반환합니다.\n\n"
+        f"제품: {product}\n"
+        f"버전: {rel.tag_name}\n"
+        f"릴리즈 노트 원문:\n{body}"
+    )
+
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={api_key}"
+    payload = {"contents": [{"parts": [{"text": prompt}]}]}
+    req = urllib.request.Request(
+        url,
+        data=json.dumps(payload).encode("utf-8"),
+        headers={"Content-Type": "application/json; charset=utf-8"},
+        method="POST",
+    )
+    with urllib.request.urlopen(req, timeout=30) as resp:
+        data = resp.read().decode("utf-8")
+        parsed = json.loads(data)
+
+    candidates = parsed.get("candidates") or []
+    for cand in candidates:
+        content = cand.get("content") or {}
+        parts = content.get("parts") or []
+        texts = [p.get("text") for p in parts if isinstance(p, dict) and p.get("text")]
+        summary = "\n".join(t.strip() for t in texts if isinstance(t, str) and t.strip())
+        if summary:
+            return summary
+    raise RuntimeError("Gemini response missing summary")
+
+
 def extract_sections(markdown: str) -> Dict[str, List[str]]:
     lines = markdown.splitlines()
     out: Dict[str, List[str]] = {
@@ -241,7 +303,12 @@ def extract_sections(markdown: str) -> Dict[str, List[str]]:
     return out
 
 
-def slack_blocks_for_release(product: str, rel: Release, sections: Dict[str, List[str]]) -> List[Dict[str, Any]]:
+def slack_blocks_for_release(
+    product: str,
+    rel: Release,
+    sections: Dict[str, List[str]],
+    ai_summary: Optional[str] = None,
+) -> List[Dict[str, Any]]:
     title = f"{product} 업데이트: {rel.tag_name}"
     subtitle_bits = []
     if rel.published_at:
@@ -265,6 +332,15 @@ def slack_blocks_for_release(product: str, rel: Release, sections: Dict[str, Lis
     ]
     if subtitle:
         blocks.append({"type": "context", "elements": [{"type": "mrkdwn", "text": subtitle}]})
+    if ai_summary:
+        trimmed = ai_summary.strip()
+        if trimmed:
+            blocks.append(
+                {
+                    "type": "section",
+                    "text": {"type": "mrkdwn", "text": f"*AI 요약 (Gemini)*\n{trimmed[:2700]}"},
+                }
+            )
 
     for key, label in [
         ("Breaking", "Breaking"),
@@ -308,6 +384,8 @@ def main() -> int:
     send_mode = (os.getenv("SLACK_SEND_MODE", "combined").strip().lower() or "combined")
     if send_mode not in ("combined", "per_repo"):
         send_mode = "combined"
+    gemini_api_key = os.getenv("GEMINI_API_KEY", "").strip() or None
+    gemini_model = os.getenv("GEMINI_MODEL", DEFAULT_GEMINI_MODEL).strip() or DEFAULT_GEMINI_MODEL
 
     state = load_state()
     updated = False
@@ -326,7 +404,14 @@ def main() -> int:
             continue
 
         sections = extract_sections(rel.body or "")
-        blocks = slack_blocks_for_release(product, rel, sections)
+        ai_summary = None
+        if gemini_api_key:
+            try:
+                ai_summary = summarize_with_gemini(product, rel, gemini_api_key, gemini_model)
+            except Exception as e:
+                print(f"[warn] Gemini summary failed for {product} {rel.tag_name}: {e}", file=sys.stderr)
+
+        blocks = slack_blocks_for_release(product, rel, sections, ai_summary)
         if send_mode == "per_repo":
             pending_posts.append((repo, blocks, rel.tag_name))
         else:
