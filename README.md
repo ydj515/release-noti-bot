@@ -27,7 +27,7 @@ GitHub Actions로 Spring Boot / Spring Framework 릴리즈를 감지해 Slack으
   - `INCLUDE_PRERELEASES` (true/false)
   - `SLACK_SEND_MODE` (combined/per_repo)
   - `GEMINI_API_KEY` (있으면 릴리스 노트를 Gemini로 요약해서 추가 전송)
-  - `GEMINI_MODEL` (선택, 기본 `gemini-1.5-flash`)
+  - `GEMINI_MODEL` (선택, 기본 `gemini-2.5-flash`)
 
 ### Gemini 요약 활성화하기
 1) Google AI Studio에서 API Key를 발급받아 GitHub Repo Secrets에 `GEMINI_API_KEY`로 저장합니다.

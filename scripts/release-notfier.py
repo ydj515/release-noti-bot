@@ -16,7 +16,7 @@ Optional env:
   INCLUDE_PRERELEASES (true/false)
   SLACK_SEND_MODE (combined/per_repo)
   GEMINI_API_KEY (optional AI summarization)
-  GEMINI_MODEL (optional, default: gemini-1.5-flash)
+  GEMINI_MODEL (optional, default: gemini-2.5-flash)
 """
 
 from __future__ import annotations
@@ -78,7 +78,7 @@ SECTION_PATTERNS = {
 }
 
 MAX_BULLETS_PER_SECTION = 8
-DEFAULT_GEMINI_MODEL = "gemini-1.5-flash"
+DEFAULT_GEMINI_MODEL = "gemini-2.5-flash"
 MAX_RELEASE_BODY_FOR_AI = 6000
 
 
