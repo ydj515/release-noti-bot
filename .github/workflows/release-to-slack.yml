@@ -60,6 +60,8 @@ jobs:
           # Save state file before switching branches
           tmp_state=$(mktemp)
           cp state/last_seen.json "$tmp_state"
+          # Clean working copy so branch switch does not fail on modified file
+          rm -f state/last_seen.json
 
           # Fetch state branch if it exists, then check it out (or create new)
           git fetch origin "$STATE_BRANCH" || true
@@ -70,6 +72,7 @@ jobs:
           fi
 
           # Restore updated state file into this branch
+          mkdir -p state
           cp "$tmp_state" state/last_seen.json
 
           if git diff --quiet -- state/last_seen.json; then
