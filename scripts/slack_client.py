@@ -10,6 +10,7 @@ def slack_blocks_for_release(
     rel: Release,
     sections: Dict[str, List[str]],
     ai_summary: Optional[str] = None,
+    ai_provider_name: str = "",
 ) -> List[Dict[str, Any]]:
     title = f"{product} 업데이트: {rel.tag_name}"
     subtitle_bits = []
@@ -40,7 +41,7 @@ def slack_blocks_for_release(
             blocks.append(
                 {
                     "type": "section",
-                    "text": {"type": "mrkdwn", "text": f"*AI 요약*\n{trimmed[:2700]}"},
+                    "text": {"type": "mrkdwn", "text": f"*AI 요약 ({ai_provider_name})*\n{trimmed[:2700]}"},
                 }
             )
 
