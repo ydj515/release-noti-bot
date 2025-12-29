@@ -36,6 +36,9 @@ def main() -> int:
         print("ERROR: SLACK_WEBHOOK_URL is required (set as GitHub Repo Secret).", file=sys.stderr)
         return 2
 
+    token = os.getenv("GITHUB_TOKEN", "").strip() or None
+    include_prereleases = env_bool("INCLUDE_PRERELEASES", False)
+
     # AI 설정 (우선순위 기반, 반복문 처리)
     ai_configs = [
         ("Gemini", "GEMINI_API_KEY", "GEMINI_MODEL", DEFAULT_GEMINI_MODEL),
