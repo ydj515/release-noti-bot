@@ -36,37 +36,33 @@ def main() -> int:
         print("ERROR: SLACK_WEBHOOK_URL is required (set as GitHub Repo Secret).", file=sys.stderr)
         return 2
 
-    token = os.getenv("GITHUB_TOKEN", "").strip() or None
-    include_prereleases = env_bool("INCLUDE_PRERELEASES", False)
-    
-    # AI 설정 (우선순위 기반 폴백)
-    # 우선순위 1: Gemini
-    gemini_api_key = os.getenv("GEMINI_API_KEY", "").strip()
-    # 우선순위 2: OpenAI
-    openai_api_key = os.getenv("OPENAI_API_KEY", "").strip()
+    # AI 설정 (우선순위 기반, 반복문 처리)
+    ai_configs = [
+        ("Gemini", "GEMINI_API_KEY", "GEMINI_MODEL", DEFAULT_GEMINI_MODEL),
+        ("OpenAI", "OPENAI_API_KEY", "OPENAI_MODEL", DEFAULT_OPENAI_MODEL),
+    ]
 
     summarizer: Optional[AISummarizer] = None
+    ai_provider_name: str = ""
 
-    if gemini_api_key:
-        model = os.getenv("GEMINI_MODEL", DEFAULT_GEMINI_MODEL).strip() or DEFAULT_GEMINI_MODEL
-        try:
-            summarizer = get_summarizer("gemini", gemini_api_key, model)
-            print(f"[info] Using Gemini (model={model})")
-        except Exception as e:
-             print(f"[warn] Failed to initialize Gemini summarizer: {e}", file=sys.stderr)
+    for name, key_env, model_env, default_model in ai_configs:
+        api_key = os.getenv(key_env, "").strip()
+        if not api_key:
+            continue
 
-    if not summarizer and openai_api_key:
-        model = os.getenv("OPENAI_MODEL", DEFAULT_OPENAI_MODEL).strip() or DEFAULT_OPENAI_MODEL
+        model = os.getenv(model_env, default_model).strip() or default_model
         try:
-            summarizer = get_summarizer("openai", openai_api_key, model)
-            if not summarizer:
-                print(f"[warn] OpenAI summarizer is not yet implemented.", file=sys.stderr)
+            summarizer = get_summarizer(name.lower(), api_key, model)
+            if summarizer:
+                print(f"[info] Using {name} (model={model})")
+                ai_provider_name = name
+                break
             else:
-                 print(f"[info] Using OpenAI (model={model})")
+                print(f"[warn] {name} summarizer is not yet implemented.", file=sys.stderr)
         except Exception as e:
-            print(f"[warn] Failed to initialize OpenAI summarizer: {e}", file=sys.stderr)
+            print(f"[warn] Failed to initialize {name} summarizer: {e}", file=sys.stderr)
 
-    if not summarizer and (openai_api_key or gemini_api_key):
+    if not summarizer and any(os.getenv(c[1], "").strip() for c in ai_configs):
         print("[warn] AI API keys found but summarizer initialization failed for all providers.", file=sys.stderr)
 
     state = load_state()
@@ -97,7 +93,7 @@ def main() -> int:
             except Exception as e:
                 print(f"[warn] AI summary failed for {product} {rel.tag_name}: {e}", file=sys.stderr)
 
-        blocks = slack_blocks_for_release(product, rel, sections, ai_summary)
+        blocks = slack_blocks_for_release(product, rel, sections, ai_summary, ai_provider_name)
         if send_mode == "per_repo":
             pending_posts.append((repo, blocks, rel.tag_name))
         else:
