@@ -38,10 +38,13 @@ jobs:
           # 옵션: Gemini 요약용 API Key. 없으면 룰 기반 메시지만 전송.
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GEMINI_MODEL: "gemini-2.5-flash"
+          # 옵션: OpenAI 요약용 API Key.
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_MODEL: "gpt-4o"
           # 옵션(원하면 수정)
           INCLUDE_PRERELEASES: "false"
         run: |
-          python scripts/release-notfier.py
+          python -m scripts.main
 
       - name: Configure git user for state commit
         run: |
