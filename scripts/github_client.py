@@ -25,11 +25,11 @@ def fetch_latest_release(repo: str, token: Optional[str] = None, include_prerele
             # 최신 안정 릴리즈를 위한 특정 엔드포인트 사용
             item = http_get_json(f"{base_url}/latest", token=token)
             if not isinstance(item, dict): # 비어있거나 404일 경우 우아하게 처리
-                 return Release("", "", "", "", False, None)
+                return Release("", "", "", "", False, None)
 
         tag_name = item.get("tag_name", "")
         if not tag_name:
-             return Release("", "", "", "", False, None)
+            return Release("", "", "", "", False, None)
 
         return Release(
             tag_name=tag_name,

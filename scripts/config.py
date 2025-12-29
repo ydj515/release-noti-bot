@@ -16,7 +16,7 @@ SECTION_PATTERNS = {
         r"^#+\s*Breaking\s+Changes\b",
         r"^#+\s*Breaking\b",
         r"^#+\s*Incompatible\s+Changes\b",
-        r"^#+\\s*Changes\\s+in\\s+Behavior\\b",
+        r"^#+\s*Changes\s+in\s+Behavior\b",
     ],
     "Deprecated": [
         r"^#+\s*Deprecations?\b",
@@ -26,7 +26,7 @@ SECTION_PATTERNS = {
         r"^#+\s*:?\w*:\s*Dependency\s+Upgrades?\b",
         r"^#+\s*Dependencies\b",
         r"^#+\s*Upgrades?\b",
-        r"^#+\\s*BOM\\s+Updates\\b",
+        r"^#+\s*BOM\s+Updates\b",
     ],
     "Features": [
         r"^#+\s*:?\w*:\s*New\s+Features\b",
@@ -55,4 +55,6 @@ MAX_BULLETS_PER_SECTION = 8
 # AI 기본값
 DEFAULT_GEMINI_MODEL = "gemini-2.5-flash"
 DEFAULT_OPENAI_MODEL = "gpt-4o"
+
+# AI 요약 관련 상수
 MAX_RELEASE_BODY_FOR_AI = 6000
