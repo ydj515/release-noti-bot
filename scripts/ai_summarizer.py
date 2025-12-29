@@ -5,13 +5,8 @@ import urllib.request
 from abc import ABC, abstractmethod
 from typing import Optional
 
+from scripts.config import MAX_RELEASE_BODY_FOR_AI
 from scripts.models import Release
-# Release dataclass와 MAX_RELEASE_BODY_FOR_AI가 사용 가능하거나 전달된다고 가정
-# 당장은 순환 참조를 피하기 위해 최소한의 정의만 유지하고,
-# 메인 스크립트가 필요한 것을 전달하도록 합니다.
-# 더 복잡한 설정에서는 'types.py'와 같은 공유 파일에 있을 수 있습니다.
-
-MAX_RELEASE_BODY_FOR_AI = 6000 # Keep in sync with config if needed
 
 
 class AISummarizer(ABC):
