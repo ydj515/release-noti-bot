@@ -1,1 +1,4 @@
-{}
+{
+  "spring-projects/spring-boot": "v4.0.1",
+  "spring-projects/spring-framework": "v7.0.2"
+}
