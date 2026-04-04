@@ -8,6 +8,9 @@ STATE_PATH = os.path.join("state", "last_seen.json")
 TARGETS = [
     ("spring-projects/spring-boot", "Spring Boot"),
     ("spring-projects/spring-framework", "Spring Framework"),
+    ("spring-projects/spring-ai", "Spring AI"),
+    ("keycloak/keycloak", "Keycloak"),
+    ("agentgateway/agentgateway", "Agent Gateway"),
 ]
 
 # 릴리즈 노트 섹션 정규표현식 패턴
