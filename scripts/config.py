@@ -11,6 +11,7 @@ TARGETS = [
     ("spring-projects/spring-ai", "Spring AI"),
     ("keycloak/keycloak", "Keycloak"),
     ("agentgateway/agentgateway", "Agent Gateway"),
+    ("apache/apisix", "Apache APISIX"),
 ]
 
 # 릴리즈 노트 섹션 정규표현식 패턴
