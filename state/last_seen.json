@@ -3,6 +3,6 @@
   "spring-projects/spring-framework": "v7.0.7",
   "spring-projects/spring-ai": "v1.1.5",
   "keycloak/keycloak": "26.6.1",
-  "agentgateway/agentgateway": "v1.1.0",
+  "agentgateway/agentgateway": "v1.2.0-alpha.2",
   "apache/apisix": "3.16.0"
 }
