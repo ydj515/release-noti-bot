@@ -38,7 +38,7 @@ GitHub Actions를 기반으로 **Spring Boot**, **Spring Framework** (또는 설
 
 소스 코드는 `scripts/` 디렉토리에 모듈화되어 있습니다.
 
-### 감시 대상 변경 (`scripts/config.py`)
+### 감시 대상 변경 (`scripts/targets.py`)
 `TARGETS` 리스트를 수정하여 감시할 저장소를 추가하거나 변경할 수 있습니다.
 ```python
 TARGETS = [
@@ -64,7 +64,8 @@ TARGETS = [
 ├── .github/workflows/      # GitHub Actions 워크플로우 정의
 ├── scripts/                # Python 소스 코드
 │   ├── main.py             # 진입점 (Entry point)
-│   ├── config.py           # 설정 (대상 저장소, 정규식 등)
+│   ├── config.py           # 설정 (정규식, 모델 기본값 등)
+│   ├── targets.py          # 감시 대상 저장소 목록
 │   ├── ai_summarizer.py    # AI 요약 로직 (Gemini, OpenAI)
 │   ├── github_client.py    # GitHub API 클라이언트
 │   ├── slack_client.py     # Slack 메시지 생성 및 전송

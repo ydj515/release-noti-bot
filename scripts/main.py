@@ -19,11 +19,11 @@ from scripts.ai_summarizer import AISummarizer, get_summarizer
 from scripts.config import (
     DEFAULT_GEMINI_MODEL,
     DEFAULT_OPENAI_MODEL,
-    TARGETS,
 )
 from scripts.github_client import fetch_latest_release
 from scripts.release_parser import extract_sections
 from scripts.slack_client import post_to_slack, slack_blocks_for_release
+from scripts.targets import TARGETS
 from scripts.utils import env_bool, load_state, save_state, semver_gt, STATE_PATH, load_env_file
 
 
