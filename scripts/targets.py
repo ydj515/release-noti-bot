@@ -9,4 +9,8 @@ TARGETS = [
     ("keycloak/keycloak", "Keycloak"),
     ("agentgateway/agentgateway", "Agent Gateway"),
     ("apache/apisix", "Apache APISIX"),
+    ("jetbrains/kotlin", "Kotlin"),
+    ("karatelabs/karate", "Karate"),
+    ("Kotlin/kotlinx.coroutines", "Kotlin Coroutines"),
+    ("spring-projects/spring-data-jpa", "Spring Data JPA"),
 ]
