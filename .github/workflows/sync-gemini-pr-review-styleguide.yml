@@ -14,8 +14,9 @@ permissions:
 
 jobs:
   sync-guide:
-    uses: ydj515/ci-workflows/.github/workflows/build-gemini-styleguide.yml@v1.0.0
+    uses: ydj515/ci-workflows/.github/workflows/build-gemini-styleguide.yml@v1.1.0
     with:
       standards_owner: ydj515
       standards_repo: dev-standards
+      standards_ref: v1.1.0
       # standards_ref: v1.0.0 (기본값)
