@@ -8,5 +8,5 @@
   "jetbrains/kotlin": "v2.4.0",
   "karatelabs/karate": "v2.0.10",
   "Kotlin/kotlinx.coroutines": "1.11.0",
-  "spring-projects/spring-data-jpa": "4.0.5"
+  "spring-projects/spring-data-jpa": "4.1.0"
 }
