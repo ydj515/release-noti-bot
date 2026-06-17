@@ -4,9 +4,9 @@
   "spring-projects/spring-ai": "v2.0.0",
   "keycloak/keycloak": "26.6.3",
   "agentgateway/agentgateway": "v1.3.0-alpha.1",
-  "apache/apisix": "3.16.0",
+  "apache/apisix": "3.17.0",
   "jetbrains/kotlin": "v2.4.0",
-  "karatelabs/karate": "v2.0.10",
+  "karatelabs/karate": "v2.1.0",
   "Kotlin/kotlinx.coroutines": "1.11.0",
   "spring-projects/spring-data-jpa": "4.1.0"
 }
