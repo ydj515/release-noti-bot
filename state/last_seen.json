@@ -3,7 +3,7 @@
   "spring-projects/spring-framework": "v7.0.8",
   "spring-projects/spring-ai": "v2.0.0",
   "keycloak/keycloak": "26.6.3",
-  "agentgateway/agentgateway": "v1.3.0",
+  "agentgateway/agentgateway": "v1.3.1",
   "apache/apisix": "3.17.0",
   "jetbrains/kotlin": "v2.4.0",
   "karatelabs/karate": "v2.1.0",
