@@ -2,7 +2,7 @@
   "spring-projects/spring-boot": "v4.1.0",
   "spring-projects/spring-framework": "v7.0.8",
   "spring-projects/spring-ai": "v2.0.0",
-  "keycloak/keycloak": "26.6.3",
+  "keycloak/keycloak": "26.6.4",
   "agentgateway/agentgateway": "v1.3.1",
   "apache/apisix": "3.17.0",
   "jetbrains/kotlin": "v2.4.0",
