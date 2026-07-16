@@ -6,7 +6,7 @@
   "agentgateway/agentgateway": "v1.3.1",
   "apache/apisix": "3.17.0",
   "jetbrains/kotlin": "v2.4.10",
-  "karatelabs/karate": "v2.1.0",
+  "karatelabs/karate": "v2.1.1",
   "Kotlin/kotlinx.coroutines": "1.11.0",
   "spring-projects/spring-data-jpa": "4.1.0"
 }
