@@ -5,7 +5,7 @@
   "keycloak/keycloak": "26.7.3",
   "agentgateway/agentgateway": "v1.5.0",
   "apache/apisix": "3.18.0",
-  "jetbrains/kotlin": "v2.4.10",
+  "jetbrains/kotlin": "v2.4.20",
   "karatelabs/karate": "v2.1.2",
   "Kotlin/kotlinx.coroutines": "1.11.0",
   "spring-projects/spring-data-jpa": "4.1.0"
