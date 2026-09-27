@@ -1,0 +1,146 @@
+{
+  "schemaVersion": 1,
+  "source": {
+    "repository": "ydj515/dev-standards",
+    "requestedRef": "latest-release",
+    "resolvedRef": "v1.3.0",
+    "commit": "549f49628fbd83e0d32ca4124025db74daa4e219"
+  },
+  "config": {
+    "path": ".dev-standards/config.yml",
+    "sha256": "58b34fe188780888dadd488eb6cd14ee912ad1e844990c7f1204f403c355b0d1"
+  },
+  "files": {
+    ".dev-standards/claude/skills/merge-dev-standards/SKILL.md": {
+      "ownership": "managed",
+      "sha256": "c6e54eda998ff050e122c1c02fcaa283458f6c9f2241db09f2822811bea10bd5"
+    },
+    ".dev-standards/claude/skills/merge-dev-standards/assets/AGENTS.md": {
+      "ownership": "managed",
+      "sha256": "47523b27f5bf6da9901c6ef04db10028f7e13e9f4d64437d0e52c78c7c2287ac"
+    },
+    ".dev-standards/claude/skills/merge-dev-standards/assets/worktreeinclude": {
+      "ownership": "managed",
+      "sha256": "e7b10751bf861174133310080e4639bef6a3d0c445059369b720343f1cf04341"
+    },
+    ".dev-standards/claude/skills/merge-dev-standards/references/claude.md": {
+      "ownership": "managed",
+      "sha256": "c89e134ffa07bea44084ae18089477074b0ec8aa4a6ad3802bee51e13172055e"
+    },
+    ".dev-standards/claude/skills/merge-dev-standards/references/codex.md": {
+      "ownership": "managed",
+      "sha256": "fed2928afdf9087edee5fb655b27fe481f77fb869e5c84ce781936b20840e8b8"
+    },
+    ".dev-standards/claude/skills/merge-dev-standards/references/gemini.md": {
+      "ownership": "managed",
+      "sha256": "31789c1c16f30a4d728700962e1ce1a3115e3de92bca0999159de07086a7bbe0"
+    },
+    ".dev-standards/claude/skills/merge-dev-standards/references/merge-rules.md": {
+      "ownership": "managed",
+      "sha256": "bb7840a5b660a860b0dbee02867dbb4d2f47464c9ee21f215d97483fa7597614"
+    },
+    ".dev-standards/codex/skills/merge-dev-standards/SKILL.md": {
+      "ownership": "managed",
+      "sha256": "c6e54eda998ff050e122c1c02fcaa283458f6c9f2241db09f2822811bea10bd5"
+    },
+    ".dev-standards/codex/skills/merge-dev-standards/assets/AGENTS.md": {
+      "ownership": "managed",
+      "sha256": "47523b27f5bf6da9901c6ef04db10028f7e13e9f4d64437d0e52c78c7c2287ac"
+    },
+    ".dev-standards/codex/skills/merge-dev-standards/assets/worktreeinclude": {
+      "ownership": "managed",
+      "sha256": "e7b10751bf861174133310080e4639bef6a3d0c445059369b720343f1cf04341"
+    },
+    ".dev-standards/codex/skills/merge-dev-standards/references/claude.md": {
+      "ownership": "managed",
+      "sha256": "c89e134ffa07bea44084ae18089477074b0ec8aa4a6ad3802bee51e13172055e"
+    },
+    ".dev-standards/codex/skills/merge-dev-standards/references/codex.md": {
+      "ownership": "managed",
+      "sha256": "fed2928afdf9087edee5fb655b27fe481f77fb869e5c84ce781936b20840e8b8"
+    },
+    ".dev-standards/codex/skills/merge-dev-standards/references/gemini.md": {
+      "ownership": "managed",
+      "sha256": "31789c1c16f30a4d728700962e1ce1a3115e3de92bca0999159de07086a7bbe0"
+    },
+    ".dev-standards/codex/skills/merge-dev-standards/references/merge-rules.md": {
+      "ownership": "managed",
+      "sha256": "bb7840a5b660a860b0dbee02867dbb4d2f47464c9ee21f215d97483fa7597614"
+    },
+    ".dev-standards/config.yml": {
+      "ownership": "project-owned"
+    },
+    ".dev-standards/gemini/skills/merge-dev-standards/SKILL.md": {
+      "ownership": "managed",
+      "sha256": "c6e54eda998ff050e122c1c02fcaa283458f6c9f2241db09f2822811bea10bd5"
+    },
+    ".dev-standards/gemini/skills/merge-dev-standards/assets/AGENTS.md": {
+      "ownership": "managed",
+      "sha256": "47523b27f5bf6da9901c6ef04db10028f7e13e9f4d64437d0e52c78c7c2287ac"
+    },
+    ".dev-standards/gemini/skills/merge-dev-standards/assets/worktreeinclude": {
+      "ownership": "managed",
+      "sha256": "e7b10751bf861174133310080e4639bef6a3d0c445059369b720343f1cf04341"
+    },
+    ".dev-standards/gemini/skills/merge-dev-standards/references/claude.md": {
+      "ownership": "managed",
+      "sha256": "c89e134ffa07bea44084ae18089477074b0ec8aa4a6ad3802bee51e13172055e"
+    },
+    ".dev-standards/gemini/skills/merge-dev-standards/references/codex.md": {
+      "ownership": "managed",
+      "sha256": "fed2928afdf9087edee5fb655b27fe481f77fb869e5c84ce781936b20840e8b8"
+    },
+    ".dev-standards/gemini/skills/merge-dev-standards/references/gemini.md": {
+      "ownership": "managed",
+      "sha256": "31789c1c16f30a4d728700962e1ce1a3115e3de92bca0999159de07086a7bbe0"
+    },
+    ".dev-standards/gemini/skills/merge-dev-standards/references/merge-rules.md": {
+      "ownership": "managed",
+      "sha256": "bb7840a5b660a860b0dbee02867dbb4d2f47464c9ee21f215d97483fa7597614"
+    },
+    ".dev-standards/standards/base.md": {
+      "ownership": "managed",
+      "sha256": "3345a97ccaf51f10e4ea6aafb7b806450fd911990409473424b8bddab38fded6"
+    },
+    ".dev-standards/standards/languages/python.md": {
+      "ownership": "managed",
+      "sha256": "95f7825b297f9923723312d834dd1ed370b7dc2aaa6069c443d855607d0d8688"
+    },
+    ".dev-standards/standards/workflows/branch.md": {
+      "ownership": "managed",
+      "sha256": "453a4e9afb7e0672ff53d585b65365429b818ba51f10d09b55887ab387da6a2d"
+    },
+    ".dev-standards/standards/workflows/commit.md": {
+      "ownership": "managed",
+      "sha256": "6c195ff5b1f5479352c5c3f8f4395d6f4cbf088a5ab7e10b09c522f26c11ed1e"
+    },
+    ".dev-standards/standards/workflows/pr.md": {
+      "ownership": "managed",
+      "sha256": "c478510b2b930e1b3e5c2cd39fdba09292171295acc73be19769565fb88f42c1"
+    },
+    ".dev-standards/standards/workflows/worktree.md": {
+      "ownership": "managed",
+      "sha256": "2a07d0c959f4725746e426d91505a262982b4d8a9727a4c67692ae975d60a644"
+    },
+    ".dev-standards/styleguide.md": {
+      "ownership": "managed",
+      "sha256": "ad2dddfbe1fe4b57ac447f9030536c25d577439c2b74d0d4f6fc8efecfb25c7d"
+    },
+    ".worktreeinclude": {
+      "ownership": "project-owned",
+      "bootstrapSha256": "e7b10751bf861174133310080e4639bef6a3d0c445059369b720343f1cf04341"
+    },
+    "AGENTS.md": {
+      "ownership": "project-owned",
+      "bootstrapSha256": "47523b27f5bf6da9901c6ef04db10028f7e13e9f4d64437d0e52c78c7c2287ac"
+    },
+    "CLAUDE.md": {
+      "ownership": "project-owned",
+      "bootstrapSha256": "336cc4fbf19beaada7ccf9986414fa91851a8d7a07dfb3ccbe800a69eed0ab49"
+    },
+    "GEMINI.md": {
+      "ownership": "project-owned",
+      "bootstrapSha256": "42fbbc9d55ee0d149c90e4bf93abe8b7278a5482b232be6f5bfc59cc0465e694"
+    }
+  }
+}

@@ -1,0 +1,6 @@
+version: 1
+
+base: true
+
+languages:
+  - python

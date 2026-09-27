@@ -4,16 +4,6 @@ import os
 # 경로 설정
 STATE_PATH = os.path.join("state", "last_seen.json")
 
-# GitHub / 제품 대상 설정
-TARGETS = [
-    ("spring-projects/spring-boot", "Spring Boot"),
-    ("spring-projects/spring-framework", "Spring Framework"),
-    ("spring-projects/spring-ai", "Spring AI"),
-    ("keycloak/keycloak", "Keycloak"),
-    ("agentgateway/agentgateway", "Agent Gateway"),
-    ("apache/apisix", "Apache APISIX"),
-]
-
 # 릴리즈 노트 섹션 정규표현식 패턴
 SECTION_PATTERNS = {
     "Breaking": [
