@@ -215,11 +215,11 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 
-# Personal mise environments and credentials
+# mise tool locks, personal environments and credentials
 mise.local.toml
 mise.*.local.toml
-mise.local.lock
-mise.*.local.lock
+mise.lock
+mise.*.lock
 .miserc.local.toml
 .env.*
 !.env.example
