@@ -1,0 +1,34 @@
+min_version = "2026.9.18"
+
+[settings]
+lockfile = true
+lockfile_platforms = ["macos-arm64", "linux-x64"]
+
+[vars]
+runtime_env = "local"
+
+[env]
+APP_ENV = "{{ vars.runtime_env }}"
+
+[tools]
+python = "3.14.6"
+
+[tasks."bootstrap"]
+description = "Install locked tools and project dependencies; do not start services"
+run = "mise install --locked python@3.14.6"
+
+[tasks."config:check"]
+description = "Validate task references without starting applications"
+run = "mise tasks validate --errors-only"
+
+[tasks."check"]
+description = "Parse Python sources without imports, network calls or notifications"
+run = "python -c 'import ast, pathlib; files = sorted(pathlib.Path(\"scripts\").glob(\"*.py\")); [ast.parse(p.read_text(), filename=str(p)) for p in files]; print(f\"Parsed {len(files)} Python files\")'"
+
+[tasks."verify"]
+description = "Validate notifier sources without sending notifications"
+run = "mise run check"
+
+[tasks."ci"]
+description = "Run verification"
+run = "mise run verify"
