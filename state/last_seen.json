@@ -1,7 +1,7 @@
 {
-  "spring-projects/spring-boot": "v4.1.1",
+  "spring-projects/spring-boot": "v4.1.2",
   "spring-projects/spring-framework": "v7.0.10",
-  "spring-projects/spring-ai": "v2.0.1",
+  "spring-projects/spring-ai": "v2.0.2",
   "keycloak/keycloak": "26.8.1",
   "agentgateway/agentgateway": "v1.6.0",
   "apache/apisix": "3.19.0",
