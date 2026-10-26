@@ -1,6 +1,7 @@
 # Release Notification Bot
 
 [![Release note notification to Slack](https://github.com/ydj515/release-noti-bot/actions/workflows/release-to-slack.yml/badge.svg)](https://github.com/ydj515/release-noti-bot/actions/workflows/release-to-slack.yml)
+[![Sync Development Standards](https://github.com/ydj515/release-noti-bot/actions/workflows/sync-dev-standards.yml/badge.svg)](https://github.com/ydj515/release-noti-bot/actions/workflows/sync-dev-standards.yml)
 [![Python 3.14.6](https://img.shields.io/badge/python-3.14.6-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
