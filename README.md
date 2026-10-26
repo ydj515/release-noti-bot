@@ -1,120 +1,124 @@
 # Release Notification Bot
 
-GitHub Actions를 기반으로 **Spring Boot**, **Spring Framework** (또는 설정된 다른 저장소)의 새 릴리즈를 감지하여 **Slack**으로 요약 알림을 보내는 봇입니다. 
+[![Release note notification to Slack](https://github.com/ydj515/release-noti-bot/actions/workflows/release-to-slack.yml/badge.svg)](https://github.com/ydj515/release-noti-bot/actions/workflows/release-to-slack.yml)
+[![Python 3.14.6](https://img.shields.io/badge/python-3.14.6-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-단순한 텍스트 알림을 넘어, **Google Gemini** 또는 **OpenAI**를 활용해 릴리즈 노트를 자동으로 요약해주며, 중요한 변경 사항(Breaking Changes, Deprecations)을 섹션별로 정리해서 보여줍니다.
+GitHub 저장소의 신규 릴리즈를 주기적으로 감지해 **Slack**으로 요약 알림을 전송하는 봇입니다.
+릴리즈 노트에서 주요 섹션(Breaking Changes, Deprecations, New Features, Bug Fixes 등)을 자동 분류하며, **Google Gemini** 연동을 통해 한국어 요약본을 함께 제공합니다.
+외부 패키지 의존성 없이 Python 표준 라이브러리만으로 동작하며, 별도 DB 없이 GitHub Actions 캐시와 전용 브랜치(`release-notifier-state`)로 알림 상태를 관리합니다.
+
+**기술 스택:** Python 3.14 (Standard Library) · GitHub Actions · Slack Block Kit · Google Gemini API · mise
 
 ## 주요 기능
 
-- **자동 감지**: 지정된 GitHub 저장소의 최신 릴리즈를 주기적으로 확인합니다.
-- **스마트 요약 (AI Powered)**: 
-  - `GEMINI_API_KEY` 설정 시 **Google Gemini**가 릴리즈 노트를 한글로 요약합니다.
-  - (준비 중) `OPENAI_API_KEY`를 이용한 OpenAI 모델 연동도 구조적으로 지원합니다 (현재 코드에서는 비활성화 상태).
-  - AI 설정이 없으면 정규표현식 기반의 기본 요약만 전송됩니다.
-- **섹션별 정리**: Breaking Changes, New Features, Bug Fixes 등을 자동으로 파싱하여 보여줍니다.
-- **상태 관리**: `state/last_seen.json` 파일을 통해 중복 알림을 방지하며, 별도의 DB 없이 GitHub Branch/Cache를 이용해 상태를 유지합니다.
-- **모듈화된 구조**: 유지보수와 확장이 용이하도록 코드가 모듈화되어 있습니다.
+- **릴리즈 자동 감지 및 상태 관리:** [`scripts/targets.py`](./scripts/targets.py)에 등록된 저장소의 최신 릴리즈를 확인하고, [`state/last_seen.json`](./state/last_seen.json)으로 중복 발송을 방지
+- **스마트 요약 및 섹션 파싱:** `GEMINI_API_KEY` 설정 시 Gemini가 핵심 변경 사항을 한글로 요약하며, 미설정 시에도 정규표현식 기반으로 주요 섹션을 추출
+- **유연한 알림 구성:** 여러 릴리즈를 한 메시지로 묶는 `combined` 모드와 저장소별로 전송하는 `per_repo` 모드, 프리릴리즈 포함 여부 설정 지원
 
-## 빠른 시작 (Quick Start)
+## 알림 메시지 예시
 
-### 1. 리포지토리 설정
-이 프로젝트를 자신의 GitHub 리포지토리로 복사하거나 포크합니다.
+Slack Block Kit 형식으로 전송되며, AI 요약과 원문 섹션 파싱 결과가 함께 표시됩니다.
 
-### 2. GitHub Secrets 설정
-`Settings` → `Secrets and variables` → `Actions` → `New repository secret`에서 다음 변수들을 추가합니다.
+> **Spring Boot 업데이트: v3.4.2**
+> [Release notes 열기](https://github.com/spring-projects/spring-boot/releases/tag/v3.4.2)
+> `Published: 2026-01-23T10:15:30Z`
+>
+> **AI 요약 (Gemini)**
+> Features:
+> - 카프카 및 OTel 자동 설정 프로퍼티 확장 지원
+> BugFixes:
+> - Actuator 헬스 체크 시 간헐적 타임아웃 오류 수정
+> Dependency:
+> - Spring Framework 6.2.2, Tomcat 10.1.34 등 주요 의존성 업그레이드
+>
+> **Bug Fixes**
+> - Fix ConcurrentModificationException in ConfigurationProperties (#43210)
+> - Resolve metrics tag collision when using custom observation convention (#43198)
+>
+> **Dependency Upgrades**
+> - Upgrade to Spring Framework 6.2.2 (#43250)
+> - Upgrade to Jackson Bom 2.18.2 (#43245)
 
-| Secret 이름 | 필수 여부 | 설명 |
-|---|---|---|
-| `SLACK_WEBHOOK_URL` | **필수** | Slack Incoming Webhook URL |
-| `GEMINI_API_KEY` | 선택 | Google Gemini API Key (AI 요약 기능 활성화 시) |
-| `OPENAI_API_KEY` | 선택 | OpenAI API Key (현재 준비 중) |
-| `GITHUB_TOKEN` | 선택 | 기본 제공 토큰 사용 권장 (API Rate Limit 회피용) |
+## 요구 사항
 
-### 3. 워크플로우 실행
-`.github/workflows/release-to-slack.yml` 워크플로우는 기본적으로 매일 **09:05 KST**에 실행됩니다.
-테스트를 위해 **Actions** 탭에서 `Release note notification to Slack` 워크플로우를 선택하고 **Run workflow**를 클릭하여 수동으로 실행해볼 수 있습니다.
+- [mise](https://mise.jdx.dev/) — Python 버전(`3.14.6`)은 [`mise.toml`](./mise.toml)에 고정되어 있으며 `mise`가 설치합니다.
 
-## 설정 및 커스터마이징
+## 빠른 시작
 
-소스 코드는 `scripts/` 디렉토리에 모듈화되어 있습니다.
+### 로컬 실행
 
-### 감시 대상 변경 (`scripts/targets.py`)
-`TARGETS` 리스트를 수정하여 감시할 저장소를 추가하거나 변경할 수 있습니다.
-```python
-TARGETS = [
-    ("spring-projects/spring-boot", "Spring Boot"),
-    ("facebook/react", "React"),  # 예시: React 추가
-]
+```bash
+mise trust ./mise.toml          # 최초 1회, mise.toml 검토 후 신뢰
+mise run bootstrap              # 고정된 Python 3.14.6 설치
+mise run verify                 # 구문 검증 (알림 발송 없음)
 ```
 
-### 환경 변수 옵션
-워크플로우 파일(`.github/workflows/release-to-slack.yml`)의 `env` 섹션에서 다음 옵션들을 조정할 수 있습니다.
+실제 Slack 알림 발송을 테스트하려면 프로젝트 루트에 `.env` 파일을 생성하고 실행하세요:
 
-- `SLACK_SEND_MODE`: 
-  - `combined` (기본값): 여러 저장소의 업데이트를 하나의 슬랙 메시지로 묶어서 전송합니다.
-  - `per_repo`: 각 저장소마다 별도의 슬랙 메시지를 전송합니다.
-- `INCLUDE_PRERELEASES`: `true`로 설정하면 프리릴리즈(RC, Milestone 등)도 알림 대상에 포함합니다.
-- `GEMINI_MODEL`: 사용할 Gemini 모델 (기본값: `gemini-2.5-flash`)
-- `OPENAI_MODEL`: 사용할 OpenAI 모델 (기본값: `gpt-4o`)
+```env
+SLACK_WEBHOOK_URL=https://hooks.slack.com/services/...
+GEMINI_API_KEY=your-api-key  # 선택 사항
+```
+
+```bash
+mise exec -- python -m scripts.main
+```
+
+### GitHub Actions 배포
+
+1. 이 저장소를 포크하거나 복사합니다.
+2. `Settings` → `Secrets and variables` → `Actions`에서 시크릿을 등록합니다 (`SLACK_WEBHOOK_URL` 필수, `GEMINI_API_KEY` 선택).
+3. [`.github/workflows/release-to-slack.yml`](./.github/workflows/release-to-slack.yml) 워크플로우가 매일 **09:05 KST**에 자동 실행됩니다 (`Actions` 탭에서 수동 실행 가능).
+
+## 주요 명령
+
+| 명령                    | 설명                                               |
+| ----------------------- | -------------------------------------------------- |
+| `mise run bootstrap`    | 고정된 Python 버전 설치 및 초기 환경 준비          |
+| `mise run config:check` | `mise` 태스크 참조 및 순환 의존성 검사             |
+| `mise run check`        | 네트워크 호출·알림 발송 없이 Python AST 구문 검사 |
+| `mise run verify`       | 프로젝트 전체 검증 (`check` 실행)                  |
+| `python -m scripts.main`| `.env` 로드 후 릴리즈 조회 및 Slack 알림 발송      |
+
+전체 태스크 목록은 `mise tasks`로 확인할 수 있습니다. `dev`/`prod` 환경 프로필(`-E dev`, `-E prod`)과 `mise.dev.local.toml` 등 상세 설정 정책은 [기여 및 개발 가이드](./docs/contributor-guide.md#mise-환경-구성-및-프로필-정책)를 참고하세요.
+
+## 설정 및 환경 변수
+
+감시 대상 저장소는 [`scripts/targets.py`](./scripts/targets.py)의 `TARGETS` 리스트에서 수정합니다.
+
+| 환경 변수              | 필수 여부 | 기본값             | 설명                                                 |
+| ---------------------- | --------- | ------------------ | ---------------------------------------------------- |
+| `SLACK_WEBHOOK_URL`    | **필수**  | -                  | Slack Incoming Webhook URL                           |
+| `GEMINI_API_KEY`       | 선택      | -                  | Google Gemini API Key (설정 시 AI 한글 요약 활성화)  |
+| `GEMINI_MODEL`         | 선택      | `gemini-2.5-flash` | 요약에 사용할 Gemini 모델                            |
+| `SLACK_SEND_MODE`      | 선택      | `combined`         | 알림 묶음 방식 (`combined` 또는 `per_repo`)          |
+| `INCLUDE_PRERELEASES`  | 선택      | `false`            | 프리릴리즈(RC, Milestone 등) 알림 포함 여부          |
+| `GITHUB_TOKEN`         | 선택      | -                  | GitHub API Rate Limit 완화용 토큰                    |
 
 ## 프로젝트 구조
 
-```
+```text
 .
-├── .github/workflows/      # GitHub Actions 워크플로우 정의
-├── scripts/                # Python 소스 코드
-│   ├── main.py             # 진입점 (Entry point)
-│   ├── config.py           # 설정 (정규식, 모델 기본값 등)
-│   ├── targets.py          # 감시 대상 저장소 목록
-│   ├── ai_summarizer.py    # AI 요약 로직 (Gemini, OpenAI)
-│   ├── github_client.py    # GitHub API 클라이언트
-│   ├── slack_client.py     # Slack 메시지 생성 및 전송
-│   ├── release_parser.py   # 릴리즈 노트 파싱 (섹션 분류)
-│   └── utils.py            # 유틸리티 함수
-├── state/                  # 릴리즈 상태 저장소 (자동 관리됨)
-└── README.md               # 문서
+├── .github/workflows/      # GitHub Actions 스케줄 및 실행 워크플로우
+├── docs/                   # 개발 및 환경 구성 가이드
+├── scripts/                # Python 소스 코드 (외부 의존성 없음)
+│   ├── main.py             # 애플리케이션 진입점
+│   ├── targets.py          # 감시 대상 GitHub 저장소 목록
+│   ├── config.py           # 섹션 파싱 정규식 및 기본 설정
+│   ├── github_client.py    # GitHub Releases REST API 클라이언트
+│   ├── release_parser.py   # 릴리즈 노트 섹션 추출기
+│   ├── ai_summarizer.py    # AI 요약기 (Gemini 연동)
+│   ├── slack_client.py     # Slack Block Kit 메시지 빌더 및 전송기
+│   └── utils.py            # 상태 관리 및 .env 로더
+├── state/                  # 마지막 알림 버전 기록 (last_seen.json)
+└── mise.toml               # 도구 버전 및 태스크 정의
 ```
 
-## 로컬 실행 방법
+## 문서 및 기여
 
-로컬 환경에서 테스트하려면 Python 3.14.6이 필요합니다.
-
-1. **의존성 없음**: 외부 라이브러리(`python-dotenv` 등) 없이 표준 라이브러리만으로 `.env` 파일을 지원합니다. 별도의 `pip install`이 필요 없습니다.
-2. **환경 변수 설정**:
-   프로젝트 루트에 `.env` 파일을 생성하고 다음과 같이 작성합니다:
-   ```env
-   SLACK_WEBHOOK_URL=https://hooks.slack.com/services/...
-   GEMINI_API_KEY=your-api-key  # 선택 사항
-   ```
-3. **실행**:
-   프로젝트 루트에서 다음 명령어를 실행합니다. `.env` 파일이 있으면 자동으로 로드됩니다.
-   ```bash
-   python -m scripts.main
-   ```
+- [기여 및 개발 가이드 (mise 환경 구성 정책)](./docs/contributor-guide.md)
 
 ## 라이선스
 
 MIT License
-
-## mise 환경과 초기 설정
-
-`mise.toml`은 도구·공통 task, `mise.dev.toml`/`mise.prod.toml`은 공유 환경 선택을 담당한다.
-
-```bash
-mise trust ./mise.toml   # task와 overlay를 검토한 뒤 신뢰
-mise run bootstrap     # 고정된 버전의 도구 설치 후 의존성 준비
-mise run config:check  # task 참조·순환 검사, 앱 실행 없음
-mise run verify        # 프로젝트 검증 (Docker 등 기존 검증 전제는 유지)
-mise -E dev run verify
-```
-
-- 기본 실행은 `APP_ENV=local`, `-E dev`는 개발 overlay, `-E prod`는 운영 설정 선택이다. 환경 선택 자체가 배포나 서비스 시작을 수행하지 않는다.
-- 개인 개발 설정은 `mise.dev.local.toml.example`을 검토해 `mise.dev.local.toml`로 복사한다. `.env.dev.local`을 만든 뒤 `env._.file`을 활성화하면 dev에서만 읽는다. 기존 개인 파일을 덮어쓰지 않는다.
-- `mise.local.toml`은 **모든 환경**에서 로드된다. prod checkout에 개인 override나 개발 dotenv를 두지 않는다. `-E local`은 사용하지 않는다.
-- `APP_ENV`는 공통 환경 식별자다. 애플리케이션의 기존 실행·배포 설정은 유지한다.
-- mise는 개발 도구의 정확한 버전 고정과 프로필 분리에 사용한다. `[settings] lockfile = false`로 도구 lock 생성을 끄고 `mise.lock`은 관리하지 않는다. 공통 표준의 mise lock 지침보다 이 저장소의 정책을 우선한다. 설치 파일까지 고정해야 하는 요구가 생기면 다시 도입한다.
-- 도구 버전은 `mise.toml`의 `[tools]`에서 관리하며 dev/prod에서도 같은 버전을 사용한다. 로컬과 CI는 `mise install` 또는 같은 정확한 버전의 setup action으로 도구를 준비한다. `package-lock.json`, `pnpm-lock.yaml`, `uv.lock`, Gradle lock 등 애플리케이션 의존성 잠금과 검증 옵션은 유지한다.
-- 지원 OS는 각 도구와 실행 스크립트의 호환성에 따른다. mise lock을 사용하지 않는다고 Windows 실행까지 보장되는 것은 아니다.
-- `mise run bootstrap`은 프로젝트 초기 설정이다. OS package·dotfile·서비스를 관리하는 `mise bootstrap`은 개인 머신 설정에서 별도로 채택한다.
-
-`verify`는 Python AST 구문 검사만 한다. 실제 알림 발송은 기존 `python -m scripts.main`으로 별도 실행한다. 앱 자체의 `.env` 자동 로드는 그대로이므로 prod 실행 checkout에는 `.env`도 두지 않는다. Python 3.14.6으로 로컬과 CI를 맞췄다.
